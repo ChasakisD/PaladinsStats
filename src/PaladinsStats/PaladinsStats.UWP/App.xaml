@@ -1,0 +1,8 @@
+﻿<Application
+    x:Class="PaladinsStats.UWP.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PaladinsStats.UWP"
+    RequestedTheme="Light">
+
+</Application>
