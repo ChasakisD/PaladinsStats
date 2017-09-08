@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using PaladinsAPI.Models;
 using PaladinsStats.Business.Interfaces;
 using PaladinsStats.Model.Models;
-using PaladinsStats.Models;
 
 namespace PaladinsStats.Business.Managers
 {
@@ -25,64 +24,79 @@ namespace PaladinsStats.Business.Managers
             _dataAccess.Update(objectForUpdate);
         }
 
-        public IEnumerable<ChampionEntity> GetChampions()
+        public IEnumerable<PaladinsChampion> GetChampions()
         {
             return _dataAccess.GetChampions();
         }
 
-        public void LoadChampionSkins(ChampionEntity champion)
+        public void LoadChampionSkins(PaladinsChampion paladinsChampion)
         {
-            var championSkins = _dataAccess.GetChampionSkins(champion);
-            champion.ChampionSkins.Clear();
+            var championSkins = _dataAccess.GetChampionSkins(paladinsChampion);
+            paladinsChampion.ChampionSkins.Clear();
             foreach (var championSkin in championSkins)
             {
-                champion.ChampionSkins.Add(championSkin);
+                paladinsChampion.ChampionSkins.Add(championSkin);
             }
         }
 
-        public IEnumerable<ItemEntity> GetItems()
+        public IEnumerable<PaladinsItem> GetItems()
         {
             return _dataAccess.GetItems();
         }
 
-        public void InsertChampion(ChampionEntity champion)
+        public UserSettings GetUserSettings()
         {
-            _dataAccess.InsertChampion(champion);
+            return _dataAccess.GetUserSettings();
         }
 
-        public void InsertChampionSkin(ChampionSkinEntity championSkin, ChampionEntity champion)
+        public void InsertChampion(PaladinsChampion paladinsChampion)
         {
-            championSkin.ParentChampion = champion;
-            _dataAccess.InsertChampionSkin(championSkin, champion);
-            champion.ChampionSkins.Add(championSkin);
+            _dataAccess.InsertChampion(paladinsChampion);
         }
 
-        public void InsertItem(ItemEntity item)
+        public void InsertChampionSkin(PaladinsChampionSkin paladinsChampionSkin, PaladinsChampion paladinsChampion)
         {
-            _dataAccess.InsertItem(item);
+            paladinsChampionSkin.ParentPaladinsChampion = paladinsChampion;
+            _dataAccess.InsertChampionSkin(paladinsChampionSkin, paladinsChampion);
+            paladinsChampion.ChampionSkins.Add(paladinsChampionSkin);
         }
 
-        public void DeleteChampion(ChampionEntity champion)
+        public void InsertItem(PaladinsItem paladinsItem)
         {
-            var championSkins = champion.ChampionSkins;
+            _dataAccess.InsertItem(paladinsItem);
+        }
+
+        public void InsertUserSettings(UserSettings settings)
+        {
+            _dataAccess.InsertUserSettings(settings);
+        }
+
+        public void DeleteChampion(PaladinsChampion paladinsChampion)
+        {
+            var championSkins = paladinsChampion.ChampionSkins;
             _dataAccess.DeleteChampionSkins(championSkins);
-            _dataAccess.DeleteChampion(champion);
+            _dataAccess.DeleteChampion(paladinsChampion);
         }
 
-        public void DeleteChampionSkin(ChampionSkinEntity championSkin, ChampionEntity parentChampion)
+        public void DeleteChampionSkin(PaladinsChampionSkin paladinsChampionSkin, PaladinsChampion parentPaladinsChampion)
         {
-            _dataAccess.DeleteChampionSkin(championSkin);
-            parentChampion.ChampionSkins.Remove(championSkin);
+            _dataAccess.DeleteChampionSkin(paladinsChampionSkin);
+            parentPaladinsChampion.ChampionSkins.Remove(paladinsChampionSkin);
         }
 
-        public void DeleteItem(ItemEntity item)
+        public void DeleteItem(PaladinsItem paladinsItem)
         {
-            _dataAccess.DeleteItem(item);
+            _dataAccess.DeleteItem(paladinsItem);
         }
 
-        public Task<double> RetrievePatchNumber()
+        public void DeleteUserSettings(UserSettings settings)
         {
-            throw new NotImplementedException();
+            _dataAccess.DeleteUserSettings(settings);
+        }
+
+        public async Task<PatchInfo> RetrievePatchNumber()
+        {
+            return await _restService.GetPatchInfoAsync();
         }
 
         public async Task<Player> RetrievePlayerByNameFromRestServiceAsync(string name)
@@ -125,7 +139,7 @@ namespace PaladinsStats.Business.Managers
             return await _restService.GetMatchAsync(matchid);
         }
 
-        public async Task<IEnumerable<ChampionEntity>> RetrieveChampionsFromRestServiceAsync()
+        public async Task<IEnumerable<PaladinsChampion>> RetrieveChampionsFromRestServiceAsync()
         {
             var prevChampions = _dataAccess.GetChampions();
             foreach (var champion in prevChampions)
@@ -134,10 +148,10 @@ namespace PaladinsStats.Business.Managers
             }
 
             var champions = await _restService.RetrieveChampionsAsync();
-            var championEntities = champions.Select(champion => new ChampionEntity(champion)).ToList();
+            var championEntities = champions.Select(champion => new PaladinsChampion(champion)).ToList();
 
             var allChampionSkins = await _restService.RetrieveChampionSkinsAsync();
-            var allChampionSkinEntities = allChampionSkins.Select(skin => new ChampionSkinEntity(skin)).ToList();
+            var allChampionSkinEntities = allChampionSkins.Select(skin => new PaladinsChampionSkin(skin)).ToList();
 
             foreach (var champion in championEntities)
             {
@@ -154,7 +168,7 @@ namespace PaladinsStats.Business.Managers
             return championEntities;
         }
 
-        public async Task<IEnumerable<ItemEntity>> RetrieveItemsFromRestServiceAsync()
+        public async Task<IEnumerable<PaladinsItem>> RetrieveItemsFromRestServiceAsync()
         {
             var prevItems = _dataAccess.GetItems();
             foreach (var item in prevItems)
@@ -163,7 +177,7 @@ namespace PaladinsStats.Business.Managers
             }
 
             var items = await _restService.RetrieveItemsAsync();
-            var itemEntities = items.Select(item => new ItemEntity(item)).ToList();
+            var itemEntities = items.Select(item => new PaladinsItem(item)).ToList();
 
             foreach (var item in itemEntities)
             {

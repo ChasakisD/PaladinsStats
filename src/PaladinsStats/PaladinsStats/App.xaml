@@ -2,6 +2,37 @@
 <prism:PrismApplication xmlns="http://xamarin.com/schemas/2014/forms"
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                         xmlns:prism="clr-namespace:Prism.Unity;assembly=Prism.Unity.Forms"
+                        xmlns:converters="clr-namespace:PaladinsStats.Converters;assembly=PaladinsStats"
                         x:Class="PaladinsStats.App">
 
+    <prism:PrismApplication.Resources>
+        <ResourceDictionary>
+            <converters:WinRatioToColorConverter x:Key="WinRatioToColorConverter"/>
+            <converters:BooleanToGameResultConverter x:Key="BooleanToGameResultConverter"/>
+            <converters:BooleanToGameResultColorConverter x:Key="BooleanToGameResultColorConverter"/>
+            
+            <Style x:Key="PropertyHeaderLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="TextColor" Value="DarkGray"/>
+            </Style>
+
+            <Style x:Key="PropertyContentLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="Gray"/>
+            </Style>
+
+            <Style x:Key="PropertyContentGoodLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="Green"/>
+            </Style>
+
+            <Style x:Key="PropertyContentBadLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="DarkRed"/>
+            </Style>
+        </ResourceDictionary>
+    </prism:PrismApplication.Resources>
 </prism:PrismApplication>

@@ -36,11 +36,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="Enums\ConfirmDialogResultType.cs" />
-    <Compile Include="Models\ChampionEntity.cs" />
-    <Compile Include="Models\ChampionSkinEntity.cs" />
-    <Compile Include="Models\ItemEntity.cs" />
-    <Compile Include="Models\PlayerEntity.cs" />
+    <Compile Include="Models\PaladinsChampion.cs" />
+    <Compile Include="Models\PaladinsChampionSkin.cs" />
+    <Compile Include="Models\PaladinsItem.cs" />
+    <Compile Include="Models\PaladinsPlayer.cs" />
+    <Compile Include="Models\UserSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -54,7 +54,7 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PaladinsAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PaladinsAPI.1.0.2\lib\PaladinsAPI.dll</HintPath>
+      <HintPath>..\packages\PaladinsAPI.1.0.3\lib\PaladinsAPI.dll</HintPath>
     </Reference>
     <Reference Include="Prism, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.6.3.0\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Prism.dll</HintPath>
@@ -80,6 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Enums\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.3.4.270\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.4.270\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets')" />

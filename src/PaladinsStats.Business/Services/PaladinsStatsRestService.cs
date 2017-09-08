@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ModernHttpClient;
@@ -16,50 +17,32 @@ namespace PaladinsStats.Business.Services
 
         public async Task<Player> GetPlayerByNameAsync(string name)
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "player/" + name);
-            var player = JsonConvert.DeserializeObject<Player>(response);
-
-            return player;
+            return await GetAsync<Player>("Player", name);
         }
 
         public async Task<PlayerStatus> GetPlayerStatusAsync(Player player)
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "status/" + player.Id);
-            var status = JsonConvert.DeserializeObject<PlayerStatus>(response);
-
-            return status;
+            return await GetAsync<PlayerStatus>("PlayerStatus", player.Id);
         }
 
         public async Task<IEnumerable<MatchHistory>> GetPlayerMatchHistoryAsync(Player player)
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "history/" + player.Name);
-            var history = JsonConvert.DeserializeObject<IEnumerable<MatchHistory>>(response);
-
-            return history;
+            return await GetAsync<IEnumerable<MatchHistory>>("History", player.Name);
         }
 
         public async Task<IEnumerable<Friend>> GetPlayerFriendsAsync(Player player)
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "friends/" + player.Id);
-            var friends = JsonConvert.DeserializeObject<IEnumerable<Friend>>(response);
-
-            return friends;
+            return await GetAsync<IEnumerable<Friend>>("Friends", player.Id);
         }
 
         public async Task<IEnumerable<ChampionRank>> GetPlayerChampionRanksAsync(Player player)
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "championranks/" + player.Id);
-            var championRanks = JsonConvert.DeserializeObject<IEnumerable<ChampionRank>>(response);
-
-            return championRanks;
+            return await GetAsync<IEnumerable<ChampionRank>>("ChampionRanks", player.Id);
         }
 
         public async Task<IEnumerable<PlayerAchievements>> GetPlayerAchievementsAsync(Player player)
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "PlayerAchievements/" + player.Id);
-            var achievements = JsonConvert.DeserializeObject<IEnumerable<PlayerAchievements>>(response);
-
-            return achievements;
+            return await GetAsync<IEnumerable<PlayerAchievements>>("PlayerAchievements", player.Id);
         }
 
         public Task<IEnumerable<PlayerLoadouts>> GetPlayerLoadoutsAsync(Player player)
@@ -69,32 +52,39 @@ namespace PaladinsStats.Business.Services
 
         public async Task<IEnumerable<MatchDetails>> GetMatchAsync(string matchId)
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "PlayerAchievements/" + matchId);
-            var matchDetails = JsonConvert.DeserializeObject<IEnumerable<MatchDetails>>(response);
-
-            return matchDetails;
+            return await GetAsync<IEnumerable<MatchDetails>>("Match", matchId);
         }
 
         public async Task<IEnumerable<Champion>> RetrieveChampionsAsync()
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "Champions/");
-            var champions = JsonConvert.DeserializeObject<IEnumerable<Champion>>(response);
-
-            return champions;
+            return await GetAsync<IEnumerable<Champion>>("Champions");
         }
 
         public async Task<IEnumerable<ChampionSkin>> RetrieveChampionSkinsAsync()
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "ChampionSkins/");
-            var championSkins = JsonConvert.DeserializeObject<IEnumerable<ChampionSkin>>(response);
-
-            return championSkins;
+            return await GetAsync<IEnumerable<ChampionSkin>>("ChampionSkins");
         }
 
         public async Task<IEnumerable<Item>> RetrieveItemsAsync()
         {
-            var response = await _httpClient.GetStringAsync(Constants.PaladinsApiUrl + "Items/");
-            var items = JsonConvert.DeserializeObject<IEnumerable<Item>>(response);
+            return await GetAsync<IEnumerable<Item>>("Items");
+        }
+
+        public async Task<PatchInfo> GetPatchInfoAsync()
+        {
+            return await GetAsync<PatchInfo>("PatchInfo");
+        }
+
+        private async Task<T> GetAsync<T>(string methodName, params dynamic[] parameters)
+        {
+            /* Generating the url we going to HTTP GET */
+            var url = Constants.PaladinsApiUrl + methodName;
+
+            /* Add every parameter we pushed into the request */
+            url = parameters.Aggregate(url, (current, param) => (string) (current + ("/" + param.ToString())));
+
+            var response = await _httpClient.GetStringAsync(url);
+            var items = JsonConvert.DeserializeObject<T>(response);
 
             return items;
         }

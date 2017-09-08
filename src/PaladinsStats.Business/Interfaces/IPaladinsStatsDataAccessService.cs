@@ -1,24 +1,26 @@
 ﻿using System.Collections.Generic;
 using PaladinsStats.Model.Models;
-using PaladinsStats.Models;
 
 namespace PaladinsStats.Business.Interfaces
 {
     public interface IPaladinsStatsDataAccessService
     {
-        IEnumerable<ChampionEntity> GetChampions();
-        IEnumerable<ChampionSkinEntity> GetChampionSkins(ChampionEntity champion);
-        IEnumerable<ItemEntity> GetItems();
+        IEnumerable<PaladinsChampion> GetChampions();
+        IEnumerable<PaladinsChampionSkin> GetChampionSkins(PaladinsChampion paladinsChampion);
+        IEnumerable<PaladinsItem> GetItems();
+        UserSettings GetUserSettings();
 
-        void InsertChampion(ChampionEntity champion);
-        void InsertChampionSkin(ChampionSkinEntity championSkin, ChampionEntity champion);
-        void InsertItem(ItemEntity item);
+        void InsertChampion(PaladinsChampion paladinsChampion);
+        void InsertChampionSkin(PaladinsChampionSkin paladinsChampionSkin, PaladinsChampion paladinsChampion);
+        void InsertItem(PaladinsItem paladinsItem);
+        void InsertUserSettings(UserSettings settings);
 
         void Update(object objectForUpdate);
 
-        void DeleteChampion(ChampionEntity champion);
-        void DeleteChampionSkins(IEnumerable<ChampionSkinEntity> championSkins);
-        void DeleteChampionSkin(ChampionSkinEntity championSkin);
-        void DeleteItem(ItemEntity item);
+        void DeleteChampion(PaladinsChampion paladinsChampion);
+        void DeleteChampionSkins(IEnumerable<PaladinsChampionSkin> championSkins);
+        void DeleteChampionSkin(PaladinsChampionSkin paladinsChampionSkin);
+        void DeleteItem(PaladinsItem paladinsItem);
+        void DeleteUserSettings(UserSettings settings);
     }
 }

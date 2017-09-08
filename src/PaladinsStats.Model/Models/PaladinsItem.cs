@@ -5,7 +5,7 @@ using SQLite.Net.Attributes;
 
 namespace PaladinsStats.Model.Models
 {
-    public class ItemEntity : BindableBase
+    public class PaladinsItem : BindableBase
     {
         private int _itemDbid;
         [JsonProperty("DbId"), PrimaryKey]
@@ -16,7 +16,6 @@ namespace PaladinsStats.Model.Models
         }
 
         private string _shortDesc;
-
         public string ShortDesc
         {
             get => _shortDesc;
@@ -63,7 +62,7 @@ namespace PaladinsStats.Model.Models
             set => SetProperty(ref _price, value);
         }
 
-        public ItemEntity(Item item)
+        public PaladinsItem(Item item)
         {
             ShortDesc = item.ShortDesc;
             Description = item.Description;

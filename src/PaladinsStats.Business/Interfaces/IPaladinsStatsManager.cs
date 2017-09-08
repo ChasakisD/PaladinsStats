@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using PaladinsAPI.Models;
 using PaladinsStats.Model.Models;
-using PaladinsStats.Models;
 
 namespace PaladinsStats.Business.Interfaces
 {
@@ -10,25 +9,28 @@ namespace PaladinsStats.Business.Interfaces
     {
         #region Local Data Access
 
-        IEnumerable<ChampionEntity> GetChampions();
-        void LoadChampionSkins(ChampionEntity champion);
-        IEnumerable<ItemEntity> GetItems();
+        IEnumerable<PaladinsChampion> GetChampions();
+        void LoadChampionSkins(PaladinsChampion paladinsChampion);
+        IEnumerable<PaladinsItem> GetItems();
+        UserSettings GetUserSettings();
 
-        void InsertChampion(ChampionEntity champion);
-        void InsertChampionSkin(ChampionSkinEntity championSkin, ChampionEntity champion);
-        void InsertItem(ItemEntity item);
+        void InsertChampion(PaladinsChampion paladinsChampion);
+        void InsertChampionSkin(PaladinsChampionSkin paladinsChampionSkin, PaladinsChampion paladinsChampion);
+        void InsertItem(PaladinsItem paladinsItem);
+        void InsertUserSettings(UserSettings settings);
 
         void Update(object objectForUpdate);
 
-        void DeleteChampion(ChampionEntity champion);
-        void DeleteChampionSkin(ChampionSkinEntity championSkin, ChampionEntity parentChampion);
-        void DeleteItem(ItemEntity item);
+        void DeleteChampion(PaladinsChampion paladinsChampion);
+        void DeleteChampionSkin(PaladinsChampionSkin paladinsChampionSkin, PaladinsChampion parentPaladinsChampion);
+        void DeleteItem(PaladinsItem paladinsItem);
+        void DeleteUserSettings(UserSettings settings);
 
         #endregion
 
         #region Rest Service Data Access
 
-        Task<double> RetrievePatchNumber();
+        Task<PatchInfo> RetrievePatchNumber();
         Task<Player> RetrievePlayerByNameFromRestServiceAsync(string name);
         Task<PlayerStatus> RetrievePlayerStatusFromRestServiceAsync(Player player);
         Task<IEnumerable<MatchHistory>> RetrievePlayerMatchHistoryFromRestServiceAsync(Player player);
@@ -38,8 +40,8 @@ namespace PaladinsStats.Business.Interfaces
         Task<IEnumerable<PlayerLoadouts>> RetrievePlayerLoadoutsFromRestServiceAsync(Player player);
         Task<IEnumerable<MatchDetails>> RetrieveMatchFromRestServiceAsync(string matchid);
 
-        Task<IEnumerable<ChampionEntity>> RetrieveChampionsFromRestServiceAsync();
-        Task<IEnumerable<ItemEntity>> RetrieveItemsFromRestServiceAsync();
+        Task<IEnumerable<PaladinsChampion>> RetrieveChampionsFromRestServiceAsync();
+        Task<IEnumerable<PaladinsItem>> RetrieveItemsFromRestServiceAsync();
 
         #endregion
     }

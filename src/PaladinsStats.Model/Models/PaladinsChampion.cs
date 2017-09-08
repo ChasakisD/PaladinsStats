@@ -6,7 +6,7 @@ using SQLite.Net.Attributes;
 
 namespace PaladinsStats.Model.Models
 {
-    public class ChampionEntity : BindableBase
+    public class PaladinsChampion : BindableBase
     {
         private int _championDbId;
         [JsonProperty("DbId"), PrimaryKey]
@@ -313,9 +313,9 @@ namespace PaladinsStats.Model.Models
             set => SetProperty(ref _latestChampion, value);
         }
 
-        public ObservableCollection<ChampionSkinEntity> ChampionSkins { get; } = new ObservableCollection<ChampionSkinEntity>();
+        public ObservableCollection<PaladinsChampionSkin> ChampionSkins { get; } = new ObservableCollection<PaladinsChampionSkin>();
 
-        public ChampionEntity(Champion champion)
+        public PaladinsChampion(Champion champion)
         {
             ChampionId = champion.id;
             Ability1 = champion.Ability1;

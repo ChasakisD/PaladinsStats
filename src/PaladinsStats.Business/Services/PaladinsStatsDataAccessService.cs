@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PaladinsStats.Business.Interfaces;
 using PaladinsStats.Model.Models;
-using PaladinsStats.Models;
 using SQLite.Net;
 
 namespace PaladinsStats.Business.Services
@@ -16,40 +16,49 @@ namespace PaladinsStats.Business.Services
         {
             _dbConnection = sqliteConnectionService.GetConnection();
 
-            _dbConnection.CreateTable<ChampionEntity>();
-            _dbConnection.CreateTable<ChampionSkinEntity>();
-            _dbConnection.CreateTable<ItemEntity>();
+            _dbConnection.CreateTable<PaladinsChampion>();
+            _dbConnection.CreateTable<PaladinsChampionSkin>();
+            _dbConnection.CreateTable<PaladinsItem>();
+            _dbConnection.CreateTable<UserSettings>();
         }
 
         #region Get Methods
 
-        public IEnumerable<ChampionEntity> GetChampions()
+        public IEnumerable<PaladinsChampion> GetChampions()
         {
             lock (Locker)
             {
-                return _dbConnection.Table<ChampionEntity>();
+                return _dbConnection.Table<PaladinsChampion>();
             }
         }
 
-        public IEnumerable<ChampionSkinEntity> GetChampionSkins(ChampionEntity champion)
+        public IEnumerable<PaladinsChampionSkin> GetChampionSkins(PaladinsChampion paladinsChampion)
         {
             lock (Locker)
             {
-                var championSkins = _dbConnection.Table<ChampionSkinEntity>().Where(skin => skin.ChampionId == champion.ChampionId);
+                var championSkins = _dbConnection.Table<PaladinsChampionSkin>().Where(skin => skin.ChampionId == paladinsChampion.ChampionId);
                 foreach (var championSkin in championSkins)
                 {
-                    championSkin.ParentChampion = champion;
+                    championSkin.ParentPaladinsChampion = paladinsChampion;
                 }
 
                 return championSkins;
             }
         }
 
-        public IEnumerable<ItemEntity> GetItems()
+        public IEnumerable<PaladinsItem> GetItems()
         {
             lock (Locker)
             {
-                return _dbConnection.Table<ItemEntity>();
+                return _dbConnection.Table<PaladinsItem>();
+            }
+        }
+
+        public UserSettings GetUserSettings()
+        {
+            lock (Locker)
+            {
+                return _dbConnection.Table<UserSettings>().ElementAt(0);
             }
         }
 
@@ -57,28 +66,37 @@ namespace PaladinsStats.Business.Services
 
         #region Insert Methods
 
-        public void InsertChampion(ChampionEntity champion)
+        public void InsertChampion(PaladinsChampion paladinsChampion)
         {
             lock (Locker)
             {
-                _dbConnection.Insert(champion);
+                _dbConnection.Insert(paladinsChampion);
             }
         }
 
-        public void InsertChampionSkin(ChampionSkinEntity championSkin, ChampionEntity champion)
+        public void InsertChampionSkin(PaladinsChampionSkin paladinsChampionSkin, PaladinsChampion paladinsChampion)
         {
             lock (Locker)
             {
-                championSkin.ParentChampion = champion;
-                _dbConnection.Insert(championSkin);
+                paladinsChampionSkin.ParentPaladinsChampion = paladinsChampion;
+                _dbConnection.Insert(paladinsChampionSkin);
             }
         }
 
-        public void InsertItem(ItemEntity item)
+        public void InsertItem(PaladinsItem paladinsItem)
         {
             lock (Locker)
             {
-                _dbConnection.Insert(item);
+                _dbConnection.Insert(paladinsItem);
+            }
+        }
+
+        public void InsertUserSettings(UserSettings settings)
+        {
+            lock (Locker)
+            {
+                if(_dbConnection.Table<UserSettings>().Any()) Update(settings);
+                else _dbConnection.Insert(settings);
             }
         }
 
@@ -97,15 +115,15 @@ namespace PaladinsStats.Business.Services
 
         #region Delete Methods
 
-        public void DeleteChampion(ChampionEntity champion)
+        public void DeleteChampion(PaladinsChampion paladinsChampion)
         {
             lock (Locker)
             {
-                _dbConnection.Delete(champion);
+                _dbConnection.Delete(paladinsChampion);
             }
         }
 
-        public void DeleteChampionSkins(IEnumerable<ChampionSkinEntity> championSkins)
+        public void DeleteChampionSkins(IEnumerable<PaladinsChampionSkin> championSkins)
         {
             lock (Locker)
             {
@@ -116,19 +134,27 @@ namespace PaladinsStats.Business.Services
             }
         }
 
-        public void DeleteChampionSkin(ChampionSkinEntity championSkin)
+        public void DeleteChampionSkin(PaladinsChampionSkin paladinsChampionSkin)
         {
             lock (Locker)
             {
-                DeleteChampionSkins(new List<ChampionSkinEntity>{championSkin});
+                DeleteChampionSkins(new List<PaladinsChampionSkin>{paladinsChampionSkin});
             }
         }
 
-        public void DeleteItem(ItemEntity item)
+        public void DeleteItem(PaladinsItem paladinsItem)
         {
             lock (Locker)
             {
-                _dbConnection.Delete(item);
+                _dbConnection.Delete(paladinsItem);
+            }
+        }
+
+        public void DeleteUserSettings(UserSettings settings)
+        {
+            lock (Locker)
+            {
+                _dbConnection.Delete(settings);
             }
         }
 

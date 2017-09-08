@@ -14,6 +14,7 @@ namespace PaladinsStats.Business.Interfaces
         Task<IEnumerable<PlayerAchievements>> GetPlayerAchievementsAsync(Player player);
         Task<IEnumerable<PlayerLoadouts>> GetPlayerLoadoutsAsync(Player player);
         Task<IEnumerable<MatchDetails>> GetMatchAsync(string matchid);
+        Task<PatchInfo> GetPatchInfoAsync();
 
 
         Task<IEnumerable<Champion>> RetrieveChampionsAsync();

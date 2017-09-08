@@ -2,8 +2,10 @@
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using PaladinsAPI.Models;
+using PaladinsStats.Model.Models;
 using Prism.Navigation;
 
 namespace PaladinsStats.ViewModels
@@ -20,6 +22,13 @@ namespace PaladinsStats.ViewModels
         }
 
         #endregion
+
+        private ObservableCollection<PaladinsChampion> _championsCollection;
+        public ObservableCollection<PaladinsChampion> ChampionCollection
+        {
+            get => _championsCollection;
+            set => SetProperty(ref _championsCollection, value);
+        }
 
         public PlayerOverviewPageViewModel(INavigationService navigationService) : base(navigationService)
         {

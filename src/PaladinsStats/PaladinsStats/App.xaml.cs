@@ -31,7 +31,6 @@ namespace PaladinsStats
             Container.RegisterType<IPaladinsStatsRestService, PaladinsStatsRestService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IPaladinsStatsDataAccessService, PaladinsStatsDataAccessService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IPaladinsStatsManager, PaladinsStatsManager>(new ContainerControlledLifetimeManager());
-            
         }
     }
 }

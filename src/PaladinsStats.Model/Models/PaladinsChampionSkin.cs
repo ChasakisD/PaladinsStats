@@ -5,7 +5,7 @@ using SQLite.Net.Attributes;
 
 namespace PaladinsStats.Model.Models
 {
-    public class ChampionSkinEntity : BindableBase
+    public class PaladinsChampionSkin : BindableBase
     {
         private int _championSkinId;
         [JsonProperty("DbId"), PrimaryKey]
@@ -56,9 +56,9 @@ namespace PaladinsStats.Model.Models
         }
 
         [Ignore]
-        public ChampionEntity ParentChampion { get; set; }
+        public PaladinsChampion ParentPaladinsChampion { get; set; }
 
-        public ChampionSkinEntity(ChampionSkin championSkin)
+        public PaladinsChampionSkin(ChampionSkin championSkin)
         {
             ChampionId = championSkin.champion_id;
             ChampionName = championSkin.champion_name;

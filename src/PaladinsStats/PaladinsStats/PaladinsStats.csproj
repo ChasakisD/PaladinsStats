@@ -35,10 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Controls\Dialogs\BaseDialog.cs" />
-    <Compile Include="Controls\Dialogs\ConfirmDialog.cs" />
-    <Compile Include="Controls\Dialogs\OptionDialog.cs" />
     <Compile Include="Controls\CommandListView.cs" />
+    <Compile Include="Converters\BooleanToGameResultColorConverter.cs" />
+    <Compile Include="Converters\BooleanToGameResultConverter.cs" />
+    <Compile Include="Converters\WinRatioToColorConverter.cs" />
     <Compile Include="Locator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
@@ -70,9 +70,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\PaladinsStats.Business\PaladinsStats.Business.csproj">
       <Project>{f9dd6d3e-b353-4c91-9382-d37c07a8bf36}</Project>
@@ -97,7 +95,7 @@
       <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PaladinsAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PaladinsAPI.1.0.2\lib\PaladinsAPI.dll</HintPath>
+      <HintPath>..\..\packages\PaladinsAPI.1.0.3\lib\PaladinsAPI.dll</HintPath>
     </Reference>
     <Reference Include="Prism, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Prism.Core.6.3.0\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Prism.dll</HintPath>

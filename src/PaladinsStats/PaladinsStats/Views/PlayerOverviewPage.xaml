@@ -5,8 +5,87 @@
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="PaladinsStats.Views.PlayerOverviewPage"
              xmlns:local="clr-namespace:PaladinsStats;assembly=PaladinsStats"
+             xmlns:iconize="clr-namespace:FormsPlugin.Iconize;assembly=FormsPlugin.Iconize"
              BindingContext="{Binding Source={x:Static local:Locator.PlayerOverviewPageViewModel}}"
              Title="{Binding Player.Name}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="ChampionStatisticsItemTemplate">
+                <ViewCell>
+                    <Grid Padding="10" ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="32"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Source="{Binding ChampionIconUrl}" Width="70" Height="70"/>
+                        <StackLayout Grid.Column="1" Orientation="Vertical">
+                            <Label Text="CPM" Style="{StaticResource PropertyHeaderLabelStyle}"/>
+                            <Label Text="{Binding}" Style="{StaticResource PropertyContentLabelStyle}"/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="2" Orientation="Vertical">
+                            <Label Text="KDA" Style="{StaticResource PropertyHeaderLabelStyle}"/>
+                            <Label Text="{Binding}" Style="{StaticResource PropertyContentLabelStyle}"/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="3" Orientation="Vertical">
+                            <Label Text="WinRatio" Style="{StaticResource PropertyHeaderLabelStyle}"/>
+                            <Label Text="{Binding}" TextColor="{Binding x, Converter={StaticResource WinRatioToColorConverter}, ConverterParameter=false}" Style="{StaticResource PropertyContentGoodLabelStyle}"/>
+                        </StackLayout>
+                        <!--<iconize:IconImage Grid.Column="4" Icon="md-keyboard-arrow-right" IconSize="32" IconColor="Gray">
+                            <iconize:IconImage.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding}"/>
+                            </iconize:IconImage.GestureRecognizers>
+                        </iconize:IconImage>-->
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+
+            <DataTemplate x:Key="MatchHistoryItemTemplate">
+                <ViewCell>
+                    <Grid Padding="10" ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="32"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Source="{Binding ChampionIconUrl}" Width="70" Height="70"/>
+                        <StackLayout Grid.Column="1" Orientation="Vertical">
+                            <Label Text="{Binding TypeOfMatch}" Style="{StaticResource PropertyHeaderLabelStyle}"/>
+                            <Label Text="{Binding Won, Converter={StaticResource BooleanToGameResultConverter}, ConverterParameter=false}" 
+                                   TextColor="{Binding Won, Converter={StaticResource BooleanToGameResultColorConverter}, ConverterParameter=false}" 
+                                   Style="{StaticResource PropertyContentGoodLabelStyle}"/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="2" Orientation="Vertical">
+                            <Label Text="KDA" Style="{StaticResource PropertyHeaderLabelStyle}"/>
+                            <Label Text="{Binding}" Style="{StaticResource PropertyContentLabelStyle}"/>
+                        </StackLayout>
+                        <!--<iconize:IconImage Grid.Column="3" Icon="md-keyboard-arrow-right" IconSize="32" IconColor="Gray">
+                            <iconize:IconImage.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding}"/>
+                            </iconize:IconImage.GestureRecognizers>
+                        </iconize:IconImage>-->
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView
+        Orientation="Vertical"
+        Padding="5">
+        <ListView
+            ItemsSource="{Binding ChampionCollection}"
+            ItemTemplate="{StaticResource ChampionStatisticsItemTemplate}"
+            RowHeight="90">
+            <ListView.Header>
+                <StackLayout BackgroundColor="DodgerBlue" HorizontalOptions="FillAndExpand">
+                    <Label Text="Champion Statistics" TextColor="Azure" Margin="10"/>
+                </StackLayout>
+            </ListView.Header>
+        </ListView>
+    </ScrollView>
     <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
         <Label Text="{Binding Player.Name}"/>
         <Label Text="{Binding Player.Wins}"/>

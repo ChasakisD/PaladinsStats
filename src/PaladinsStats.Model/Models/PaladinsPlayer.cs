@@ -1,6 +1,6 @@
 ﻿namespace PaladinsStats.Model.Models
 {
-    public class PlayerEntity
+    public class PaladinsPlayer
     {
 
     }
