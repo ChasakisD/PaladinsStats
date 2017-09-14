@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using AutoMapper;
 using PaladinsAPI;
 using PaladinsAPI.Enumerations;
 using PaladinsAPI.Exceptions;
@@ -18,9 +20,11 @@ namespace PaladinsStats.Service.Controllers
     public class PlayersController : ApiController
     {
         private readonly PaladinsStatsServiceContext _dbContext = new PaladinsStatsServiceContext();
+        private readonly LoadoutItemEntitiesController _loadoutItemController = new LoadoutItemEntitiesController();
         private readonly PlayerAchievementsController _achievementsController = new PlayerAchievementsController();
         private readonly PlayerStatusEntitiesController _statusController = new PlayerStatusEntitiesController();
         private readonly PlayerChampionRankEntitiesController _championRanksController = new PlayerChampionRankEntitiesController();
+        private readonly PlayerLoadoutsEntitiesController _playerLoadoutsController = new PlayerLoadoutsEntitiesController();
         private readonly PaladinsApi _paladinsApi = new PaladinsApi(Constants.PaladinsDevId, Constants.PaladinsAuthKey, Platform.Pc);
         
         [Route("api/Players")]
@@ -80,9 +84,18 @@ namespace PaladinsStats.Service.Controllers
                     History_Last_Updated = DateTime.Now,
                     lastUpdated = DateTime.Now
                 };
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<PlayerEntity, PlayerEntity>();
+                    cfg.CreateMap<PlayerAchievementsEntity, PlayerAchievementsEntity>();
+                    cfg.CreateMap<PlayerChampionRankEntity, PlayerChampionRankEntity>();
+                    cfg.CreateMap<PlayerStatusEntity, PlayerStatusEntity>();
+                    cfg.CreateMap<PlayerLoadoutsEntity, PlayerLoadoutsEntity>();
+                });
+                Mapper.Map(newplayer, player);
 
-                if (isPlayerInDb) PutPlayerEntity(newplayer.DbId, newplayer);
-                else PostPlayerEntity(newplayer);
+                if (isPlayerInDb) PutPlayerEntity(player.DbId, player);
+                else PostPlayerEntity(player);
 
                 #endregion
 
@@ -100,7 +113,8 @@ namespace PaladinsStats.Service.Controllers
                     {
                         DbId = achievements.DbId
                     };
-                    _achievementsController.PutPlayerAchievementsEntity(newAchievements.DbId, newAchievements);
+                    Mapper.Map(newAchievements, achievements);
+                    _achievementsController.PutPlayerAchievementsEntity(achievements.DbId, achievements);
                 }
                 else
                 {
@@ -114,22 +128,25 @@ namespace PaladinsStats.Service.Controllers
                 
                 var ranks = _dbContext.PlayerChampionRankEntities
                     .Where(r => r.player_id.Equals(newplayer.Id.ToString()));
-                var newRanks = await _paladinsApi.GetChampionRanks(newplayer.Id);
+
+                var ranksFromApi = await _paladinsApi.GetChampionRanks(newplayer.Id);
                 if (ranks.Any())
                 {
                     foreach (var rank in ranks)
                     {
-                        var selectedRank = new PlayerChampionRankEntity(newRanks
-                            .Find(r => r.champion_id.Equals(rank.champion_id)))
+                        var foundRank = ranksFromApi
+                            .Find(r => r.champion_id.Equals(rank.champion_id));
+                        var selectedRank = new PlayerChampionRankEntity(foundRank)
                         {
                             DbId = rank.DbId
                         };
-                        _championRanksController.PutPlayerChampionRankEntity(selectedRank.DbId, selectedRank);
-                        newRanks.Remove(selectedRank);
+                        Mapper.Map(selectedRank, rank);
+                        _championRanksController.PutPlayerChampionRankEntity(rank.DbId, rank);
+                        ranksFromApi.Remove(foundRank);
                     }
                 }
 
-                foreach (var rankEntity in newRanks)
+                foreach (var rankEntity in ranksFromApi)
                 {
                     var selectedRank = new PlayerChampionRankEntity(rankEntity);
                     _championRanksController.PostPlayerChampionRankEntity(selectedRank);
@@ -151,7 +168,12 @@ namespace PaladinsStats.Service.Controllers
                     {
                         DbId = status.DbId
                     };
-                    _statusController.PutPlayerStatusEntity(newStatus.DbId, newStatus);
+
+                    /* When user is offline, api returns 0 in playerId */
+                    if (newStatus.playerId == 0) newStatus.playerId = newplayer.Id;
+
+                    Mapper.Map(newStatus, status);
+                    _statusController.PutPlayerStatusEntity(status.DbId, status);
                 }
                 else
                 {
@@ -160,8 +182,37 @@ namespace PaladinsStats.Service.Controllers
                 }
 
                 #endregion
-                
-                //TODO Update PlayerLoadouts
+
+                #region Update PlayerLoadouts
+
+                var loadouts = _dbContext.PlayerLoadoutsEntities
+                    .Where(l => l.PlayerId == newplayer.Id)
+                    .ToList();
+
+                var loadoutsFromApi = await _paladinsApi.GetPlayerLoadouts(newplayer.Id);
+                if (loadoutsFromApi.Any())
+                {
+                    foreach (var loadout in loadouts)
+                    {
+                        var foundLoadout = loadoutsFromApi
+                            .Find(l => l.DeckId == loadout.DeckId);
+                        var selectedLoadout = new PlayerLoadoutsEntity(foundLoadout)
+                        {
+                            DbId = loadout.DbId
+                        };
+                        Mapper.Map(selectedLoadout, loadout);
+                        _playerLoadoutsController.PutPlayerLoadoutsEntity(loadout.DbId, loadout);
+                        loadoutsFromApi.Remove(foundLoadout);
+                    }
+                }
+
+                foreach (var loadout in loadoutsFromApi)
+                {
+                    var selectedLoadout = new PlayerLoadoutsEntity(loadout);
+                    _playerLoadoutsController.PostPlayerLoadoutsEntity(selectedLoadout);
+                }
+
+                #endregion
 
                 return StatusCode(HttpStatusCode.NoContent);
             }
@@ -201,7 +252,7 @@ namespace PaladinsStats.Service.Controllers
             {
                 return BadRequest();
             }
-
+            
             _dbContext.Entry(playerEntity).State = EntityState.Modified;
 
             try

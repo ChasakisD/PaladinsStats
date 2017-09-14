@@ -22,7 +22,7 @@ namespace PaladinsStats.Service.Controllers
             return _dbContext.PlayerAchievementsEntities;
         }
 
-        [Route("api/Achiements/{id}")]
+        [Route("api/Achievements/{id}")]
         // GET: api/playerachievementsentities/5
         [ResponseType(typeof(PlayerAchievementsEntity))]
         public IHttpActionResult GetPlayerAchievementsEntity(int id)

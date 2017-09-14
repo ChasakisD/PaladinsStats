@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using PaladinsStats.Service.Models;
@@ -16,13 +13,12 @@ namespace PaladinsStats.Service.Controllers
         private readonly PaladinsStatsServiceContext _dbContext = new PaladinsStatsServiceContext();
 
         // GET: api/playerstatusentities
-        [Route("api/Achievements")]
         public IQueryable<PlayerStatusEntity> GetPlayerStatusEntities()
         {
             return _dbContext.PlayerStatusEntities;
         }
 
-        [Route("api/Achiements/{id}")]
+        [Route("api/Status/{id}")]
         // GET: api/playerstatusentities/5
         [ResponseType(typeof(PlayerStatusEntity))]
         public IHttpActionResult GetPlayerStatusEntity(int id)

@@ -7,9 +7,22 @@ using PaladinsAPI.Models;
 
 namespace PaladinsStats.Service.Models
 {
-    public class LoadoutItemEntity : LoadoutItem
+    public class LoadoutItemEntity
     {
-       [Key]
+        [Key]
         public int DbId { get; set; }
+        public int ItemId { get; set; }
+        public string ItemName { get; set; }
+        public int Points { get; set; }
+        public int DeckId { get;set; }
+
+        public LoadoutItemEntity() { }
+
+        public LoadoutItemEntity(LoadoutItem item)
+        {
+            ItemId = item.ItemId;
+            ItemName = item.ItemName;
+            Points = item.Points;
+        }
     }
 }
